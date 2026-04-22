@@ -32,7 +32,7 @@ const brandColors = {
 };
 
 function Home() {
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState({ name: 'Shomarc', bio: '', avatarUrl: '', links: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

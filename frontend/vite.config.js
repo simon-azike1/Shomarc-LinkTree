@@ -6,15 +6,8 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   base: '/',
   build: {
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        passes: 2
-      },
-      mangle: {
-        safari10: true
-      }
-    }
+    minify: false,
+    sourcemap: true
   },
   server: {
     proxy: {
