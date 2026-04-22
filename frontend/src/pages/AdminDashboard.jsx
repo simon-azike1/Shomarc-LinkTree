@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { getProfile, createProfile, updateProfile, addLink, updateLink, deleteLink, reorderLinks } from '../services/api';
+import { getProfile, createProfile, updateProfile, addLink, updateLink, deleteLink, reorderLinks, adminLogin } from '../services/api';
 
 function AdminDashboard() {
   const [profile, setProfile] = useState(null);
@@ -16,7 +16,7 @@ function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('profile');
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const socialIcons = {
     whatsapp: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z',
@@ -67,25 +67,19 @@ function AdminDashboard() {
     loadUser();
   }, []);
 
-  const handleAdminLogin = (e) => {
+  const handleAdminLogin = async (e) => {
     e.preventDefault();
-    const storedPassword = localStorage.getItem('admin_password');
-    const defaultPassword = 'admin123';
-    if (adminPassword === storedPassword || adminPassword === defaultPassword) {
+    try {
+      await adminLogin(adminPassword);
       setIsAdminAuthenticated(true);
       localStorage.setItem('admin_auth', 'true');
-    } else {
+      setError(null);
+    } catch (err) {
       setError('Invalid password');
     }
   };
 
-  const handleSetPassword = (e) => {
-    e.preventDefault();
-    if (adminPassword) {
-      localStorage.setItem('admin_password', adminPassword);
-      setError(null);
-    }
-  };
+
 
   const handleCreateUser = async (e) => {
     e.preventDefault();
@@ -242,14 +236,32 @@ function AdminDashboard() {
             <form onSubmit={handleAdminLogin} className="space-y-5">
               <div>
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Password</label>
-                <input
-                  type="password"
-                  value={adminPassword}
-                  onChange={(e) => setAdminPassword(e.target.value)}
-                  placeholder="Enter password"
-                  required
-                  className={inputClass}
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={adminPassword}
+                    onChange={(e) => setAdminPassword(e.target.value)}
+                    placeholder="Enter password"
+                    required
+                    className={inputClass + " pr-12"}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 0115.063-3.542M21 12c0 4.478-2.943 8.268-7 9.543M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3l18 18" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
               </div>
               <button
                 type="submit"
@@ -259,21 +271,7 @@ function AdminDashboard() {
               </button>
             </form>
 
-            <div className="mt-6 pt-6 border-t border-gray-100">
-              <p className="text-xs text-gray-400 mb-2">Set new password:</p>
-              <form onSubmit={(e) => { e.preventDefault(); localStorage.setItem('admin_password', newPassword); setNewPassword(''); setError('Password updated!'); }} className="flex gap-2">
-                <input
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="New password"
-                  className={inputClass}
-                />
-                <button type="submit" className="px-4 py-2 bg-gray-900 text-white text-sm font-bold">
-                  Save
-                </button>
-              </form>
-            </div>
+
           </div>
 
           <div className="mt-6 text-center">
@@ -682,8 +680,8 @@ function AdminDashboard() {
               <div className="bg-amber-50 border border-amber-200 p-4">
                 <p className="text-amber-800 text-sm font-medium">
                   🔗 Your public page:{' '}
-                  <Link to={`/${profile.username}`} target="_blank" className="font-bold underline hover:no-underline text-amber-600">
-                    {typeof window !== 'undefined' && window.location.origin}/{profile.username}
+                  <Link to={`/`} target="_blank" className="font-bold underline hover:no-underline text-amber-600">
+                    {typeof window !== 'undefined' && window.location.origin}
                   </Link>
                 </p>
               </div>

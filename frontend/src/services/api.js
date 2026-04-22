@@ -88,3 +88,18 @@ export const reorderLinks = async (links) => {
 export const redirectLink = (linkId) => {
   return `${API_BASE_URL}/redirect/${linkId}`;
 };
+
+export const adminLogin = async (password) => {
+  const response = await fetch(`${API_BASE_URL}/admin/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password })
+  });
+  
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+  
+  return response.json();
+};

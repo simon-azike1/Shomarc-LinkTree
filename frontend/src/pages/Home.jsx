@@ -160,7 +160,6 @@ function Home() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
           >
-            <Link to="/admin" className="text-xs text-gray-300 hover:text-amber-500">Admin</Link>
           </motion.footer>
         </div>
         </motion.div>
