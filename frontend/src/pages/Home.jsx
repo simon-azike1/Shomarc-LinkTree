@@ -102,43 +102,43 @@ function Home() {
       <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-amber-100 opacity-40 -translate-y-1/2 translate-x-1/3"></div>
       <div className="absolute top-24 left-0 w-48 h-48 rounded-full bg-yellow-50 opacity-60 -translate-x-1/2"></div>
 
-      <motion.div 
-            className="relative z-10 py-12 px-4"
-            initial="hidden"
-            animate="visible"
-          >
-          <div className="max-w-sm mx-auto">
-            <motion.div 
-              className="text-center mb-10"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="relative inline-block mb-5">
-                {profile?.avatarUrl ? (
-                  <motion.img 
-                    src={profile.avatarUrl} 
-                    alt={profile.name} 
-                    className="w-28 h-28 mx-auto object-cover shadow-2xl ring-4 ring-amber-100"
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.4, delay: 0.1 }}
-                  />
-                ) : (
-                  <motion.div 
-                    className="w-28 h-28 mx-auto bg-amber-400 flex items-center justify-center shadow-2xl ring-4 ring-amber-100"
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.4, delay: 0.1 }}
-                  >
-                    <span className="text-5xl text-white font-black">{profile?.name?.charAt(0) || 'S'}</span>
-                  </motion.div>
-                )}
-              </div>
+       <motion.div 
+             className="relative z-10 py-12 px-4 sm:py-16 sm:px-6"
+             initial="hidden"
+             animate="visible"
+           >
+              <div className="max-w-sm mx-auto">
+              <motion.div 
+                className="text-center mb-10"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                <div className="relative inline-block mb-5">
+                  {profile?.avatarUrl ? (
+                    <motion.img 
+                      src={profile.avatarUrl} 
+                      alt={profile.name} 
+                      className="w-24 h-24 sm:w-28 sm:h-28 mx-auto object-cover shadow-2xl ring-4 ring-amber-100"
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.4, delay: 0.1 }}
+                    />
+                  ) : (
+                    <motion.div 
+                      className="w-24 h-24 sm:w-28 sm:h-28 mx-auto bg-amber-400 flex items-center justify-center shadow-2xl ring-4 ring-amber-100"
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.4, delay: 0.1 }}
+                    >
+                      <span className="text-4xl sm:text-5xl text-white font-black">{profile?.name?.charAt(0) || 'S'}</span>
+                    </motion.div>
+                  )}
+                </div>
 
-              <h1 className="text-2xl font-black text-gray-900">{profile?.name || 'Shomarc'}</h1>
-              {profile?.bio && <p className="text-gray-500 text-sm mt-2">{profile.bio}</p>}
-            </motion.div>
+                <h1 className="text-2xl sm:text-2xl font-black text-gray-900 px-4">{profile?.name || 'Shomarc'}</h1>
+                {profile?.bio && <p className="text-gray-500 text-sm mt-2 px-4 leading-relaxed">{profile.bio}</p>}
+              </motion.div>
 
           <motion.div 
             className="flex flex-col gap-2"
@@ -148,25 +148,25 @@ function Home() {
             {sortedLinks.map((link, index) => {
               const colors = brandColors[link.icon] || brandColors.link;
               return (
-              <motion.button
-                key={link._id}
-                onClick={() => handleLinkClick(link)}
-                className="flex items-center gap-3 py-3 px-4 text-gray-900 font-medium hover:opacity-80 transition-all duration-200 group"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className={`w-9 h-9 ${colors.bg} flex items-center justify-center flex-shrink-0`}>
-                  <svg className={`w-5 h-5 ${colors.text}`} fill="currentColor" viewBox="0 0 24 24">
-                    <path d={socialIcons[link.icon] || socialIcons.link} />
+               <motion.button
+                  key={link._id}
+                  onClick={() => handleLinkClick(link)}
+                  className="flex items-center gap-3 py-4 px-4 text-gray-900 font-medium bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md hover:border-gray-200 hover:-translate-y-0.5 transition-all duration-300 ease-out group sm:py-3.5 sm:px-4.5 sm:rounded-xl"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  <div className={`w-11 h-11 ${colors.bg} flex items-center justify-center rounded-xl flex-shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:drop-shadow-sm sm:w-10 sm:h-10`}>
+                    <svg className={`w-6 h-6 ${colors.text} transition-colors duration-300 sm:w-5 sm:h-5`} fill="currentColor" viewBox="0 0 24 24">
+                      <path d={socialIcons[link.icon] || socialIcons.link} />
+                    </svg>
+                  </div>
+                  <span className="flex-1 text-left text-[16px] sm:text-[15px]">{link.title}</span>
+                  <svg className="w-5 h-5 sm:w-4 sm:h-5 text-gray-300 group-hover:text-amber-500 transition-colors duration-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                   </svg>
-                </div>
-                <span className="flex-1 text-left">{link.title}</span>
-                <svg className="w-4 h-4 text-gray-400 group-hover:text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </motion.button>
+                </motion.button>
             );
             })}
           </motion.div>

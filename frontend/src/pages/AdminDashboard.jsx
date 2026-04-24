@@ -382,66 +382,79 @@ function AdminDashboard() {
         </svg>
       </button>
 
-      {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-40 bg-white border-r border-gray-100 transition-all duration-300 shadow-sm ${sidebarOpen ? 'w-64' : 'w-0 lg:w-20'} lg:relative flex-shrink-0`}>
-        <div className="flex flex-col h-full p-5">
-          {/* Logo */}
-          <div className="flex items-center gap-3 mb-10 px-1">
-            <div className="w-10 h-10 bg-amber-400 flex items-center justify-center shadow-md shadow-amber-400/30 flex-shrink-0 overflow-hidden">
-              <img src="/shomarc_logo.png" alt="Logo" className="w-7 h-7 object-contain"
-                   onError={(e) => { e.target.style.display='none'; }} />
-            </div>
-            {sidebarOpen && (
-              <span className="text-gray-900 font-black text-xl tracking-tight">
-                Sho<span className="text-amber-400">marc</span>
-              </span>
-            )}
-          </div>
+       {/* Mobile backdrop overlay */}
+       {sidebarOpen && (
+         <div 
+           className="fixed inset-0 bg-black/50 z-30 lg:hidden" 
+           onClick={() => setSidebarOpen(false)}
+         ></div>
+       )}
 
-          {/* Nav */}
-          <nav className="flex-1 space-y-1">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-3 transition-all duration-200 text-sm font-semibold ${
-                  activeTab === item.id
-                    ? 'bg-amber-400 text-gray-900 shadow-md shadow-amber-400/30'
-                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-                }`}
-              >
-                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
-                </svg>
-                {sidebarOpen && <span>{item.label}</span>}
-              </button>
-            ))}
-          </nav>
+       {/* Sidebar */}
+       <aside className={`fixed inset-y-0 left-0 z-40 bg-white border-r border-gray-100 transition-all duration-300 shadow-sm transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 w-64 lg:w-20 flex-shrink-0`}>
+         <div className="flex flex-col h-full p-5">
+           {/* Logo */}
+           <div className="flex items-center gap-3 mb-10 px-1">
+             <div className="w-10 h-10 bg-amber-400 flex items-center justify-center shadow-md shadow-amber-400/30 flex-shrink-0 overflow-hidden">
+               <img src="/shomarc_logo.png" alt="Logo" className="w-7 h-7 object-contain"
+                    onError={(e) => { e.target.style.display='none'; }} />
+             </div>
+             {sidebarOpen && (
+               <span className="text-gray-900 font-black text-xl tracking-tight">
+                 Sho<span className="text-amber-400">marc</span>
+               </span>
+             )}
+           </div>
 
-          {/* Bottom links */}
-          <div className="pt-5 border-t border-gray-100 space-y-1">
-            <Link
-              to={`/`}
-              target="_blank"
-              className="flex items-center gap-3 px-3 py-3 text-gray-500 hover:bg-amber-50 hover:text-amber-600 transition-all text-sm font-medium"
-            >
-              <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-              {sidebarOpen && <span>View Page</span>}
-            </Link>
-            <Link
-              to="/"
-              className="flex items-center gap-3 px-3 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all text-sm font-medium"
-            >
-              <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>
-              {sidebarOpen && <span>Home</span>}
-            </Link>
-          </div>
-        </div>
-      </aside>
+           {/* Nav */}
+           <nav className="flex-1 space-y-1">
+             {navItems.map((item) => (
+               <button
+                 key={item.id}
+                 onClick={() => {
+                   setActiveTab(item.id);
+                   if (window.innerWidth < 1024) setSidebarOpen(false);
+                 }}
+                 className={`w-full flex items-center gap-3 px-3 py-3 transition-all duration-200 text-sm font-semibold ${
+                   activeTab === item.id
+                     ? 'bg-amber-400 text-gray-900 shadow-md shadow-amber-400/30'
+                     : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                 }`}
+               >
+                 <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                 </svg>
+                 {sidebarOpen && <span>{item.label}</span>}
+               </button>
+             ))}
+           </nav>
+
+           {/* Bottom links */}
+           <div className="pt-5 border-t border-gray-100 space-y-1">
+             <Link
+               to={`/`}
+               target="_blank"
+               onClick={() => window.innerWidth < 1024 && setSidebarOpen(false)}
+               className="flex items-center gap-3 px-3 py-3 text-gray-500 hover:bg-amber-50 hover:text-amber-600 transition-all text-sm font-medium"
+             >
+               <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+               </svg>
+               {sidebarOpen && <span>View Page</span>}
+             </Link>
+             <Link
+               to="/"
+               onClick={() => window.innerWidth < 1024 && setSidebarOpen(false)}
+               className="flex items-center gap-3 px-3 py-3 text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-all text-sm font-medium"
+             >
+               <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+               </svg>
+               {sidebarOpen && <span>Home</span>}
+             </Link>
+           </div>
+         </div>
+       </aside>
 
       {/* Main content */}
       <main className="flex-1 p-4 lg:p-8 overflow-auto">
