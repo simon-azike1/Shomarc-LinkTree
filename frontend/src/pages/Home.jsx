@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import { getProfile, redirectLink } from '../services/api';
 
@@ -57,6 +58,27 @@ function Home() {
         ? `https://wa.me/${phone}?text=${msg}`
         : `https://wa.me/${phone}`;
       window.open(waUrl, '_blank');
+    } else if (link.icon === 'email') {
+      // Extract email from Gmail URLs or use URL as-is
+      let email = link.url.trim()
+      // Handle Gmail compose URLs
+      const gmailMatch = email.match(/[?&]to=([^&]+)/)
+      if (gmailMatch) {
+        email = decodeURIComponent(gmailMatch[1])
+      } else if (email.startsWith('mailto:')) {
+        // Extract email from mailto: URLs
+        email = email.substring(7).split('?')[0]
+      } else if (email.startsWith('http')) {
+        // Try to extract from other URL formats
+        const mailtoMatch = email.match(/mailto:([^?]+)/)
+        if (mailtoMatch) {
+          email = mailtoMatch[1]
+        }
+      }
+      const subject = encodeURIComponent(link.title || '')
+      const body = link.message ? encodeURIComponent(link.message) : ''
+      const mailtoUrl = `mailto:${email}${subject ? `?subject=${subject}` : ''}${body ? (subject ? '&' : '?') + `body=${body}` : ''}`
+      window.open(mailtoUrl, '_blank')
     } else {
       window.open(redirectLink(link._id), '_blank');
     }

@@ -11,6 +11,14 @@ const linkSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  icon: {
+    type: String,
+    default: 'link'
+  },
+  message: {
+    type: String,
+    default: ''
+  },
   order: {
     type: Number,
     default: 0

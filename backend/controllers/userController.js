@@ -64,7 +64,7 @@ const createUser = async (req, res) => {
 const addLink = async (req, res) => {
   try {
     const { username } = req.params;
-    const { title, url } = req.body;
+    const { title, url, icon, message } = req.body;
     
     const user = await User.findOne({ username: username.toLowerCase() });
     
@@ -77,6 +77,8 @@ const addLink = async (req, res) => {
     const newLink = {
       title,
       url,
+      icon: icon || 'link',
+      message: message || '',
       order: maxOrder + 1,
       clicks: 0
     };
@@ -93,7 +95,7 @@ const addLink = async (req, res) => {
 const updateLink = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, url, order } = req.body;
+    const { title, url, icon, order, message } = req.body;
     
     const user = await User.findOne({ 'links._id': id });
     
@@ -105,7 +107,9 @@ const updateLink = async (req, res) => {
     
     if (title !== undefined) link.title = title;
     if (url !== undefined) link.url = url;
+    if (icon !== undefined) link.icon = icon;
     if (order !== undefined) link.order = order;
+    if (message !== undefined) link.message = message;
     
     await user.save();
     res.json(link);

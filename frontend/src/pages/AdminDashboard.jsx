@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import { getProfile, createProfile, updateProfile, addLink, updateLink, deleteLink, reorderLinks, adminLogin } from '../services/api';
 
@@ -63,6 +64,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     const storedAuth = localStorage.getItem('admin_auth');
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (storedAuth) setIsAdminAuthenticated(true);
     loadUser();
   }, []);
@@ -74,7 +76,8 @@ function AdminDashboard() {
       setIsAdminAuthenticated(true);
       localStorage.setItem('admin_auth', 'true');
       setError(null);
-    } catch (err) {
+    // eslint-disable-next-line no-unused-vars
+    } catch (_err) {
       setError('Invalid password');
     }
   };
@@ -583,10 +586,10 @@ function AdminDashboard() {
                           <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Title</label>
                           <input type="text" value={linkForm.title} onChange={(e) => setLinkForm({ ...linkForm, title: e.target.value })} required className={inputClass} placeholder="My Website" />
                         </div>
-                        <div>
-                          <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">{linkForm.icon === 'whatsapp' ? 'Phone Number' : linkForm.icon === 'phone' ? 'Phone Number' : 'URL'}</label>
-                          <input type={linkForm.icon === 'whatsapp' || linkForm.icon === 'phone' ? 'tel' : 'url'} value={linkForm.url} onChange={(e) => setLinkForm({ ...linkForm, url: e.target.value })} required className={inputClass} placeholder={linkForm.icon === 'whatsapp' ? '+1234567890' : linkForm.icon === 'phone' ? '+1234567890' : 'https://example.com'} />
-                        </div>
+                         <div>
+                           <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">{linkForm.icon === 'whatsapp' ? 'Phone Number' : linkForm.icon === 'phone' ? 'Phone Number' : linkForm.icon === 'email' ? 'Email Address' : 'URL'}</label>
+                           <input type={linkForm.icon === 'whatsapp' || linkForm.icon === 'phone' ? 'tel' : linkForm.icon === 'email' ? 'email' : 'url'} value={linkForm.url} onChange={(e) => setLinkForm({ ...linkForm, url: e.target.value })} required className={inputClass} placeholder={linkForm.icon === 'whatsapp' ? '+1234567890' : linkForm.icon === 'phone' ? '+1234567890' : linkForm.icon === 'email' ? 'you@example.com' : 'https://example.com'} />
+                         </div>
                         <div className="md:col-span-2">
                           <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Icon</label>
                           <select value={linkForm.icon} onChange={(e) => setLinkForm({ ...linkForm, icon: e.target.value })} className={inputClass}>
@@ -603,12 +606,14 @@ function AdminDashboard() {
                             <option value="website">Website</option>
                           </select>
                         </div>
-                        {linkForm.icon === 'whatsapp' && (
-                          <div className="md:col-span-2">
-                            <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Pre-filled Message (optional)</label>
-                            <input type="text" value={linkForm.message || ''} onChange={(e) => setLinkForm({ ...linkForm, message: e.target.value })} className={inputClass} placeholder="Hello! I'd like to connect." />
-                          </div>
-                        )}
+                         {(linkForm.icon === 'whatsapp' || linkForm.icon === 'email') && (
+                           <div className="md:col-span-2">
+                             <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+                               {linkForm.icon === 'whatsapp' ? 'Pre-filled Message (optional)' : 'Pre-filled Message (optional)'}
+                             </label>
+                             <input type="text" value={linkForm.message || ''} onChange={(e) => setLinkForm({ ...linkForm, message: e.target.value })} className={inputClass} placeholder={linkForm.icon === 'whatsapp' ? "Hello! I'd like to connect." : "Your message here..."} />
+                           </div>
+                         )}
                       </div>
                       <div className="flex gap-3">
                         <button type="submit" disabled={loading} className="px-5 py-2.5 bg-amber-400 text-gray-900 font-bold hover:bg-amber-500 disabled:opacity-50 transition-all text-xs uppercase tracking-wider">
