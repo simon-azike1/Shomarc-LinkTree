@@ -51,14 +51,15 @@ function Home() {
   }, []);
 
   const handleLinkClick = (link) => {
-    if (link.icon === 'whatsapp') {
+    const icon = (link.icon || '').toLowerCase().trim();
+    if (icon === 'whatsapp') {
       const phone = link.url.replace(/[^0-9]/g, '');
       const msg = link.message ? encodeURIComponent(link.message) : '';
       const waUrl = msg 
         ? `https://wa.me/${phone}?text=${msg}`
         : `https://wa.me/${phone}`;
       window.open(waUrl, '_blank');
-    } else if (link.icon === 'email') {
+    } else if (icon === 'email') {
       // Extract email from Gmail URLs or use URL as-is
       let email = link.url.trim()
       // Handle Gmail compose URLs
@@ -79,6 +80,7 @@ function Home() {
       const body = link.message ? encodeURIComponent(link.message) : ''
       const mailtoUrl = `mailto:${email}${subject ? `?subject=${subject}` : ''}${body ? (subject ? '&' : '?') + `body=${body}` : ''}`
       window.open(mailtoUrl, '_blank')
+      return
     } else {
       window.open(redirectLink(link._id), '_blank');
     }
