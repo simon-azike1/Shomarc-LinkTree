@@ -1,114 +1,141 @@
-# Link in Bio - Custom Link-in-Bio Web App
+# Link in Bio (MERN)
 
-A mobile-first "link-in-bio" web application built with the MERN stack (MongoDB, Express, React, Node.js).
+A mobile-first **link-in-bio** web application built with the **MERN stack**:
+- **MongoDB** for storage
+- **Express/Node.js** for the API
+- **React (Vite)** for the frontend
+
+It lets you manage a single profile (MVP-style) with multiple links, track clicks, and redirect visitors to the selected link.
 
 ## Features
 
-- **Public Profile Page** (`/[username]`) - Display your links with avatar, display name, and bio
-- **Admin Dashboard** (`/admin`) - Manage your profile and links (no authentication for MVP)
-- **Click Tracking** - Track clicks on each link
-- **Responsive Design** - Mobile-first UI built with Tailwind CSS
+- Public profile page: `/:username`
+- Admin dashboard: `/admin`
+- Manage profile details (name, bio, avatar)
+- Manage links (title, URL, icon, message, ordering)
+- Click tracking via redirect endpoint
+- Deployed-friendly routing for Netlify
+
+## Tech Stack
+
+- **Frontend:** React 19, React Router, Vite
+- **Backend:** Node.js, Express, Mongoose
+- **Database:** MongoDB
+
+## Project Structure
+
+```
+frontend/  -> React + Vite
+backend/   -> Express + Mongoose API
+```
 
 ## Prerequisites
 
 - Node.js 18+
 - MongoDB (local or MongoDB Atlas)
 
-## Project Structure
+## Setup (Local Development)
 
-```
-/client   → React frontend (Vite)
-/server   → Express backend
-```
+### 1) Install dependencies
 
-## Setup Instructions
-
-### 1. Clone and Install Dependencies
-
-**Backend:**
+**Backend**
 ```bash
 cd backend
 npm install
 ```
 
-**Frontend:**
+**Frontend**
 ```bash
 cd frontend
 npm install
 ```
 
-### 2. Configure Environment Variables
+### 2) Configure environment variables
 
-**Backend:**
-```bash
-cd backend
-cp .env.example .env
-# Edit .env and set your MONGO_URI
+**Backend** (`backend/server.js` reads these):
+- `MONGO_URI` (default: `mongodb://localhost:27017/shomarc`)
+- `ADMIN_PASSWORD` (required for `POST /api/admin/login`)
+- `PORT` (default: `5000`)
+
+Create a `backend/.env` file with at least:
+```env
+MONGO_URI=mongodb://localhost:27017/shomarc
+ADMIN_PASSWORD=your-password
+PORT=5000
 ```
 
-**Frontend:**
-```bash
-cd frontend
-cp .env.example .env
-# Edit .env to set your VITE_API_URL (defaults to http://localhost:5000/api)
-```
+**Frontend**
+- If your frontend uses an API base URL env var (commonly `VITE_API_URL`), set it accordingly.
 
-### 3. Start MongoDB
+### 3) Start MongoDB
 
-**Option A: Local MongoDB**
+Local (example using Docker):
 ```bash
-# Install and start MongoDB locally, or use Docker:
 docker run -d -p 27017:27017 mongo
 ```
 
-**Option B: MongoDB Atlas**
-1. Create a free account at https://www.mongodb.com/atlas
-2. Create a new cluster
-3. Get your connection string
-4. Update the MONGO_URI in backend/.env
+### 4) Run the application
 
-### 4. Run the Application
-
-**Start Backend:**
+**Start backend**
 ```bash
 cd backend
 npm run dev
-# Server runs on http://localhost:5000
 ```
+Backend listens on: `http://localhost:5000`
 
-**Start Frontend:**
+**Start frontend**
 ```bash
 cd frontend
 npm run dev
-# Client runs on http://localhost:5173
 ```
-
-### 5. Access the App
-
-1. Open http://localhost:5173 in your browser
-2. Click "Get Started" to create your profile
-3. Enter a username, display name, and bio
-4. Add your links
-5. Share your public page at `http://localhost:5173/yourusername`
+Frontend runs on: `http://localhost:5173`
 
 ## API Endpoints
 
+Base path: `/api`
+
+### Admin
+
 | Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/user/:username` | Get user profile |
-| PUT | `/api/user/:username` | Update user profile |
-| POST | `/api/user` | Create new user |
-| POST | `/api/links/:username` | Add a new link |
-| PUT | `/api/links/:id` | Update a link |
-| DELETE | `/api/links/:id` | Delete a link |
-| GET | `/api/redirect/:linkId` | Redirect and track click |
+|---|---|---|
+| POST | `/api/admin/login` | Validate admin password (`ADMIN_PASSWORD`) |
 
-## Tech Stack
+### Profile
 
-- **Frontend:** React 19, React Router, Tailwind CSS 4, Vite
-- **Backend:** Node.js, Express, Mongoose
-- **Database:** MongoDB
+The backend stores a single `Profile` document and creates it automatically if missing.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/profile` | Get or initialize the profile |
+| POST | `/api/profile` | Create profile (or upsert-like behavior) |
+| PUT | `/api/profile` | Update profile |
+
+### Links
+
+Links are embedded in the profile document.
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/links` | Add a new link (auto-assigns `order`) |
+| PUT | `/api/links/:id` | Update a link by id |
+| DELETE | `/api/links/:id` | Delete a link by id |
+| PUT | `/api/links/reorder` | Reorder links by passing `{ links: [{ _id, order }, ...] }` |
+
+### Redirect + Click Tracking
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/redirect/:id` | Increment click counter and redirect to link URL |
+
+## Deployment (Netlify)
+
+The repo includes `netlify.toml` configured to:
+- Build the frontend with `npx vite build`
+- Publish `dist`
+- Route SPA paths to `index.html`
+- Route `/api/*` to Netlify Functions (`/.netlify/functions/api`) with status `200`
 
 ## License
 
 MIT
+
