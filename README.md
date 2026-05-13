@@ -127,13 +127,16 @@ Links are embedded in the profile document.
 |---|---|---|
 | GET | `/api/redirect/:id` | Increment click counter and redirect to link URL |
 
-## Deployment (Netlify)
+## Deployment
 
-The repo includes `netlify.toml` configured to:
-- Build the frontend with `npx vite build`
-- Publish `dist`
-- Route SPA paths to `index.html`
-- Route `/api/*` to Netlify Functions (`/.netlify/functions/api`) with status `200`
+This project is designed to be deployable on static hosts + a serverless/edge API.
+
+- **Frontend build:** handled by Vite (`frontend` → `dist`)
+- **Backend/API:** exposed via the Express routes in `backend/server.js`
+
+If you deploy with a provider that supports Node/serverless functions, route API requests to the Express handler.
+
+> Note: `netlify.toml` exists in the repo, but deployments may also be done via **Vercel** or **Render** (provider-specific routing required).
 
 ## License
 
